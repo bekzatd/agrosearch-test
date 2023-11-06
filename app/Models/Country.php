@@ -11,4 +11,9 @@ class Country extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = ['name', 'slug'];
+
+    public function tax(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Tax::class, 'country_id', 'id');
+    }
 }

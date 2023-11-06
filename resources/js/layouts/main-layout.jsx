@@ -1,8 +1,15 @@
-import React from "react";
+import React, {useState} from "react";
 import { Outlet } from "react-router-dom";
 import {Button, Container, Nav, Navbar} from "react-bootstrap";
+import Cart from "../components/cart/index.jsx";
+import {useSelector} from "react-redux";
+import {currentCart} from "../features/cart/index.js";
 
 export default function MainLayout() {
+    const cart = useSelector(currentCart);
+
+    const [show, setShow] = useState(false);
+
     return (
         <>
             <Navbar expand="lg" className="bg-body-tertiary">
@@ -15,14 +22,24 @@ export default function MainLayout() {
                             style={{ maxHeight: '100px' }}
                             navbarScroll
                         />
-                        <Button variant="outline-success">Корзина</Button>
+                        <Button
+                            variant="outline-success"
+                            onClick={() => setShow(true)}
+                            disabled={cart.length === 0}
+                        >
+                            Корзина {cart.length > 0 ? `: ${cart.length}` : ''}
+                        </Button>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
             <main>
                 <Outlet />
             </main>
-
+            <Cart
+                show={show}
+                setShow={setShow}
+                data={cart}
+            />
         </>
     );
 }
