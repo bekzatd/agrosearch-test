@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+    nginx:
+        image: nginx:latest
+        volumes:
+            - ./:/var/www/agrosearch
+            - ./_docker/nginx/local/conf.d:/etc/nginx/conf.d
+        ports:
+            - "8876:80"
+        depends_on:
+            - app
+        container_name: agrosearch_nginx
+
+    app:
+        build:
+            context: .
+            dockerfile: _docker/app/Dockerfile
+        volumes:
+            - ./:/var/www/agrosearch
+        depends_on:
+            - db
+        container_name: agrosearch_app
+
+    db:
+        image: postgres:12.12
+        restart: always
+        volumes:
+            - ./tmp/db:/var/lib/postgres
+        environment:
+            POSTGRES_DB: agrosearch_db
+            POSTGRES_USER: agrosearch_user
+            POSTGRES_PASSWORD: agrosearch2023
+        ports:
+            - "8987:5432"
+        container_name: agrosearch_db
